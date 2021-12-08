@@ -1,36 +1,42 @@
-const Thing = require('../models/thing');
+const Sauces = require('../models/sauces');
 const fs = require('fs');
-const thing = require('../models/thing');
 
-exports.createThing =  (req, res, next) => {
-    const thingObject = JSON.parse(req.body.thing);
-    delete thingObject._id;
-    const thing = new Thing({
-      ...thingObject,
+exports.getAllSauces = (req, res, next) => {
+  Sauces.find()
+  .then(things => res.status(200).json(things))
+  .catch(error => res.status(400).json({ error }));
+  
+};
+
+exports.createSauces =  (req, res, next) => {
+    const saucesObject = JSON.parse(req.body.thing);
+    delete saucesObject._id;
+    const sauces = new Sauces({
+      ...saucesObject,
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
-    thing.save() //A modifier impérativement 
+    sauces.save() //A modifier impérativement 
       .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
       .catch(error => res.status(400).json({ error }));
 };
 
-exports.modifyThing = (req, res, next) => {
-    const thingObject = req.file ?
+exports.modifySauces = (req, res, next) => {
+    const saucesObject = req.file ?
     { 
         ...JSON.parse(req.body.thing),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
      } : { ...req.body };
-    Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })
+    Sauces.updateOne({ _id: req.params.id }, { ...saucesObject, _id: req.params.id })
       .then(() => res.status(200).json({ message: 'Objet modifié !'}))
       .catch(error => res.status(400).json({ error }));
 };
 
-exports.deleteThing = (req, res, next) => {
-  Thing.findOne({ _id: req.params.id })
-  .then(thing => {
-    const filename = thing.imageUrl.split('/images/')[1];
+exports.deleteSauces = (req, res, next) => {
+  Sauces.findOne({ _id: req.params.id })
+  .then(sauce => {
+    const filename = sauce.imageUrl.split('/images/')[1];
     fs.unlink(`images/${filename}`, () => {
-      Thing.deleteOne({ _id: req.params.id })
+      Sauces.deleteOne({ _id: req.params.id })
         .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
         .catch(error => res.status(400).json({ error }));
     });
@@ -39,16 +45,10 @@ exports.deleteThing = (req, res, next) => {
 };
 
 
-exports.getOneThing =  (req, res, next) => {
-    Thing.findOne({ _id: req.params.id })
+exports.getOneSauces =  (req, res, next) => {
+    Sauces.findOne({ _id: req.params.id })
       .then(thing => res.status(200).json(thing))
       .catch(error => res.status(404).json({ error }));
 };
 
 
-exports.getAllThings = (req, res, next) => {
-    Thing.find()
-    .then(things => res.status(200).json(things))
-    .catch(error => res.status(400).json({ error }));
-    
-};

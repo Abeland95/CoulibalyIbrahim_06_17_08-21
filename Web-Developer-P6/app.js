@@ -26,9 +26,9 @@ app.use(bodyParser.json())
 // Middleware pour répondre aux requêtes envoyé aux images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-app.use('api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
-app.use('api/sauces', saucesRoutes);
+app.use('/api/sauces', saucesRoutes);
 
 
 
