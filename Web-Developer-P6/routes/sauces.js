@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
+const Sauces = require('../models/sauces')
 const authCrtl = require('../controllers/sauces');
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
@@ -20,5 +21,8 @@ router.put('/:id', auth, multer, authCrtl.modifySauces);
 
 // Suppression objet ------------------------------------------
 router.delete('/:id', auth, authCrtl.deleteSauces);
+
+// POST pour modifier les likes
+router.post('/:id/like', auth, authCrtl.likes )
 
 module.exports = router;
